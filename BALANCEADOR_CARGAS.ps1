@@ -49,7 +49,7 @@ Preparar-Imagen "swap1GB" "$URL_BASE" "$DIR_BASE"
 Preparar-Imagen "base_cda"     "$URL_BASE" "$DIR_BASE"
 
 
-Write-Host ">> CDA 2025/26 -- Ejemplo balanceo de carga con HAproxy"
+Write-Host ">> CDA 2025/26 -- Balanceo de carga de aplicaciones Web, empleado almacenamiento compartido basado en iSCSI [NGINX]"
 $ID = Read-Host ">> Introducir identificador de las MVs (sin espacios) "
 
 
@@ -58,6 +58,7 @@ $BASE_VBOX = $env:VBOX_MSI_INSTALL_PATH
 if ([string]::IsNullOrEmpty($BASE_VBOX)) {
    $BASE_VBOX = $env:VBOX_INSTALL_PATH
 }
+#La variable de entorno ya esta declarada al principio del fichero
 if ([string]::IsNullOrEmpty($BASE_VBOX)) {
    $READ_BASE_VBOX = Read-Host ">> Introducir directorio de instalacion de VirtualBox (habitualente `"C:\\Program Files\Oracle\VirtualBox`") :"
    if ([string]::IsNullOrEmpty($READ_BASE_VBOX)) {
@@ -116,7 +117,7 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE1"))  {
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222222 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic2 nat  --macaddress2 080027111101 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nat-pf2 `"guestssh,tcp,,2223,,22`" " -NoNewWindow -Wait 
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nat-pf2 `"guestssh,tcp,,2223,,23`" " -NoNewWindow -Wait 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --clipboard-mode bidirectional " -NoNewWindow -Wait   
 
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
@@ -202,7 +203,7 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_DISCOS"))  {
   Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic1 intnet --intnet1 vlan1 --macaddress1 080027111112 --cableconnected1 on --nictype1 82540EM " -NoNewWindow -Wait
 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic2 nat  --macaddress2 080027111104 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nat-pf2 `"guestssh,tcp,,2222,,22`" " -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nat-pf2 `"guestssh,tcp,,2226,,22`" " -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --clipboard-mode bidirectional " -NoNewWindow -Wait
   
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/num_interfaces 2" -NoNewWindow -Wait
