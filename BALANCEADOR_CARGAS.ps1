@@ -151,7 +151,7 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE1"))  {
   Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE1 --name STORAGE_$MV_APACHE1  --add sata  --portcount 4  " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  100 " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  30 " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222222 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic2 nat  --macaddress2 080027111101 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
@@ -180,7 +180,7 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE2"))  {
   Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE2 --name STORAGE_$MV_APACHE2  --add sata  --portcount 4   " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  100 " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  30 " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222223 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
   
   Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic2 nat  --macaddress2 080027111102 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
