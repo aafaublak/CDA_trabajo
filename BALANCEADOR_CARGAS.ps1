@@ -138,6 +138,7 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_BALANCEADOR"))  {
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/2/netmask 24" -NoNewWindow -Wait  
 
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/default_gateway 193.147.87.33" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/default_nameserver 8.8.8.8" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/host_name balanceador" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/etc_hosts_dump `"balanceador:193.147.87.47,cliente:193.147.87.33,apache1:10.10.10.11,apache2:10.10.10.22,storage:10.10.10.33`" " -NoNewWindow -Wait    
 }
