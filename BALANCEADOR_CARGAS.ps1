@@ -89,74 +89,23 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_CLIENTE"))  {
   Start-Process $VBOX_MANAGE  "modifyvm $MV_CLIENTE --nic1 intnet --intnet1 vlan1 --macaddress1 080027111111 --cableconnected1 on --nictype1 82540EM " -NoNewWindow -Wait    
 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_CLIENTE --nic2 nat  --macaddress2 080027111104 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_CLIENTE --nat-pf2 `"guestssh,tcp,,2222,,22`" " -NoNewWindow -Wait 
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_CLIENTE --natpf2 `"guestssh,tcp,,2222,,22`" " -NoNewWindow -Wait 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_CLIENTE --clipboard-mode bidirectional " -NoNewWindow -Wait   
   
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/0/type static" -NoNewWindow -Wait    
+  #conf ip predeterminada  de la propia mv
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/0/type static" -NoNewWindow -Wait  
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/0/address 193.147.87.33" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/1/type static" -NoNewWindow -Wait    
+  
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/1/type static" -NoNewWindow -Wait  
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/1/address 10.0.3.15" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
-  
+  #gateway (no tocar)
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/default_gateway 193.147.87.1" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/host_name cliente" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/etc_hosts_dump `"cliente:193.147.87.33,balanceador.cda.net:193.147.87.47`" " -NoNewWindow -Wait    
-}
-
-# Crear imagen DEL SERVER1 (2º)
-$MV_APACHE1="APACHE1_$ID"
-if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE1"))  {
-# Solo 1 vez
-  Start-Process $VBOX_MANAGE  "createvm  --name $MV_APACHE1 --basefolder `"$DIR_BASE`"  --register --ostype Debian_64  " -NoNewWindow -Wait       
-  Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE1 --name STORAGE_$MV_APACHE1  --add sata  --portcount 4  " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  30 " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222222 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
-
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic2 nat  --macaddress2 080027111101 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nat-pf2 `"guestssh,tcp,,2223,,23`" " -NoNewWindow -Wait 
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --clipboard-mode bidirectional " -NoNewWindow -Wait   
-
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/type static" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/address 10.10.10.11" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/type static" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/address 10.0.3.15" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/default_gateway 10.10.10.1" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/host_name apache1" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/etc_hosts_dump `"balanceador:10.10.10.1,apache2:10.10.10.22`" " -NoNewWindow -Wait    
-}
-
-# Crear imagen DEL SERVER2 (3º)
-$MV_APACHE2="APACHE2_$ID"
-if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE2"))  {
-# Solo 1 vez
-  Start-Process $VBOX_MANAGE  "createvm  --name $MV_APACHE2 --basefolder `"$DIR_BASE`"  --register --ostype Debian_64 " -NoNewWindow -Wait       
-  Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE2 --name STORAGE_$MV_APACHE2  --add sata  --portcount 4   " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  30 " -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222223 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
-
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic2 nat  --macaddress2 080027111102 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nat-pf2 `"guestssh,tcp,,2224,,22`" " -NoNewWindow -Wait 
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --clipboard-mode bidirectional " -NoNewWindow -Wait     
-  
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/type static" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/address 10.10.10.22" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/type static" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/address 10.0.3.15" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/default_gateway 10.10.10.1" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/host_name apache2" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/etc_hosts_dump `"balanceador:10.10.10.1,apache1:10.10.10.11`" " -NoNewWindow -Wait    
+  #pares de NAT <ip,address> necesarios a modo de identificar la MV
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_CLIENTE /DSBOX/etc_hosts_dump `"cliente:193.147.87.33,balanceador:193.147.87.47`" " -NoNewWindow -Wait    
 }
 
 # Crear imagen DEL BALANCEADOR (4º)
@@ -172,53 +121,114 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_BALANCEADOR"))  {
   Start-Process $VBOX_MANAGE  "modifyvm $MV_BALANCEADOR --nic2 intnet --intnet2 vlan2 --macaddress2 080027555555 --cableconnected2 on --nictype2 82540EM " -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "modifyvm $MV_BALANCEADOR --nic3 nat --macaddress3 080027666666 --cableconnected3 on --nictype3 82540EM " -NoNewWindow -Wait    
   
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_BALANCEADOR --nat-pf3 `"guestssh,tcp,,2225,,22`" " -NoNewWindow -Wait 
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_BALANCEADOR --natpf3 `"guestssh,tcp,,2223,,22`" " -NoNewWindow -Wait 
   Start-Process $VBOX_MANAGE  "modifyvm $MV_BALANCEADOR --clipboard-mode bidirectional " -NoNewWindow -Wait     
-  
-
+  #ip principal del balanceador (red cliente-balanceador)
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/num_interfaces 3" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/0/type static" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/0/address 193.147.87.47" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait 
+  #ip secundaria (red balanceador-backend)
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/1/type static" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/1/address 10.10.10.1" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
+
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/2/type static" -NoNewWindow -Wait    
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/2/address 10.0.4.15" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/2/netmask 24" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/default_gateway 10.0.4.2" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/host_name balanceador.cda.net" -NoNewWindow -Wait    
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/etc_hosts_dump `"balanceador.cda.net:193.147.87.47,cliente:193.147.87.33,apache1:10.10.10.11,apache2:10.10.10.22`" " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/eth/2/netmask 24" -NoNewWindow -Wait  
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/default_gateway 193.147.87.33" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/host_name balanceador" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_BALANCEADOR /DSBOX/etc_hosts_dump `"balanceador:193.147.87.47,cliente:193.147.87.33,apache1:10.10.10.11,apache2:10.10.10.22,storage:10.10.10.33`" " -NoNewWindow -Wait    
+}
+
+# Crear imagen DEL SERVER1 (2º)
+$MV_APACHE1="APACHE1_$ID"
+if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE1"))  {
+# Solo 1 vez
+
+  Start-Process $VBOX_MANAGE  "createvm  --name $MV_APACHE1 --basefolder `"$DIR_BASE`"  --register --ostype Debian_64  " -NoNewWindow -Wait       
+  Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE1 --name STORAGE_$MV_APACHE1  --add sata  --portcount 4  " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE1 --storagectl STORAGE_$MV_APACHE1 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  100 " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222222 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
+
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --nic2 nat  --macaddress2 080027111101 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --natpf2 `"guestssh,tcp,,2224,,22`" " -NoNewWindow -Wait 
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE1 --clipboard-mode bidirectional " -NoNewWindow -Wait   
+  
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/type static" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/address 10.10.10.11" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/type static" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/address 10.0.5.15" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/default_gateway 10.10.10.1" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/host_name apache1" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE1 /DSBOX/etc_hosts_dump `"apache2:10.10.10.22,balanceador:10.10.10.1,apache1:10.10.10.11,storage:10.10.10.33`" " -NoNewWindow -Wait    
+}
+
+# Crear imagen DEL SERVER2 (3º)
+$MV_APACHE2="APACHE2_$ID"
+if (!(Test-Path -Path "$DIR_BASE\$MV_APACHE2"))  {
+# Solo 1 vez
+  Start-Process $VBOX_MANAGE  "createvm  --name $MV_APACHE2 --basefolder `"$DIR_BASE`"  --register --ostype Debian_64 " -NoNewWindow -Wait       
+  Start-Process $VBOX_MANAGE  "storagectl $MV_APACHE2 --name STORAGE_$MV_APACHE2  --add sata  --portcount 4   " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "storageattach $MV_APACHE2 --storagectl STORAGE_$MV_APACHE2 --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga  --cpuexecutioncap  100 " -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic1 intnet --intnet1 vlan2 --macaddress1 080027222223 --cableconnected1 on --nictype1 82540EM" -NoNewWindow -Wait    
+  
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --nic2 nat  --macaddress2 080027111102 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait  
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --natpf2 `"guestssh,tcp,,2225,,22`" " -NoNewWindow -Wait 
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_APACHE2 --clipboard-mode bidirectional " -NoNewWindow -Wait     
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/num_interfaces 2" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/type static" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/address 10.10.10.22" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait    
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/type static" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/address 10.0.6.15" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait    
+
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/default_gateway 10.10.10.1" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/host_name apache2" -NoNewWindow -Wait    
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_APACHE2 /DSBOX/etc_hosts_dump `"apache2:10.10.10.22,balanceador:10.10.10.1,apache1:10.10.10.11,storage:10.10.10.33`" " -NoNewWindow -Wait    
 }
 
 # Crear imagen DEL TARGET iSCSI (5º)
-$MV_DISCOS="DISCOS_$ID"
+$MV_DISCOS="STORAGE_$ID"
 if (!(Test-Path -Path "$DIR_BASE\$MV_DISCOS"))  {
-# Solo 1 vez
+
   Start-Process $VBOX_MANAGE  "createvm  --name $MV_DISCOS --basefolder `"$DIR_BASE`"  --register --ostype Debian_64 " -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "storagectl $MV_DISCOS --name STORAGE_$MV_DISCOS  --add sata --portcount 4" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "storagectl $MV_DISCOS --name STORAGE_$MV_DISCOS  --add sata --portcount 6" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "storageattach $MV_DISCOS --storagectl STORAGE_$MV_DISCOS --port 0 --device 0 --type hdd --medium `"$DIR_BASE\base_cda.vdi`"  --mtype multiattach " -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "storageattach $MV_DISCOS --storagectl STORAGE_$MV_DISCOS --port 1 --device 0 --type hdd --medium `"$DIR_BASE\swap1GB.vdi`"  --mtype immutable " -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --cpus 2 --memory 512 --pae on --vram 16 --graphicscontroller vboxsvga" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic1 intnet --intnet1 vlan1 --macaddress1 080027111112 --cableconnected1 on --nictype1 82540EM " -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic1 intnet --intnet1 vlan2 --macaddress1 080027111112 --cableconnected1 on --nictype1 82540EM " -NoNewWindow -Wait
 
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic2 nat  --macaddress2 080027111104 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nat-pf2 `"guestssh,tcp,,2226,,22`" " -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --nic2 nat  --macaddress2 080027111110 --cableconnected2 on --nictype2 82540EM" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --natpf2 `"guestssh,tcp,,2226,,22`" " -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "modifyvm $MV_DISCOS --clipboard-mode bidirectional " -NoNewWindow -Wait
   
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/num_interfaces 2" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/0/type static" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/0/address 192.168.100.11" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/0/address 10.10.10.33" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/0/netmask 24" -NoNewWindow -Wait
 
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/1/type static" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/1/address 10.0.3.15" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/1/address 10.0.7.15" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/eth/1/netmask 24" -NoNewWindow -Wait
   
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/default_gateway 10.0.3.2" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/default_gateway 10.10.10.1" -NoNewWindow -Wait
   Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/default_nameserver 8.8.8.8" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/host_name discos.cda.net" -NoNewWindow -Wait
-  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/etc_hosts_dump `"discos.cda.net:192.168.100.11,cliente1.cda.net:192.168.100.22,cliente2.cda.net:192.168.100.33`" " -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/host_name storage" -NoNewWindow -Wait
+  Start-Process $VBOX_MANAGE  "guestproperty set $MV_DISCOS /DSBOX/etc_hosts_dump `"storage:10.10.10.33,apache1:10.10.10.11,apache2:10.10.10.22,balanceador:10.10.10.1`" " -NoNewWindow -Wait
 
   if ( !(Test-Path -Path "$DIR_BASE/ISCSI1_$MV_DISCOS.vdi" )) {
     Start-Process $VBOX_MANAGE "createhd --filename `"$DIR_BASE/ISCSI1_$MV_DISCOS.vdi`" --size 100 --format VDI" -NoNewWindow -Wait
@@ -245,14 +255,14 @@ if (!(Test-Path -Path "$DIR_BASE\$MV_DISCOS"))  {
 
 Write-Host "Arrancando maquinas virtuales ..."
 Start-Process $VBOX_MANAGE  "startvm $MV_CLIENTE" -NoNewWindow -Wait    
+Start-Process $VBOX_MANAGE  "startvm $MV_BALANCEADOR" -NoNewWindow -Wait
 Start-Process $VBOX_MANAGE  "startvm $MV_APACHE1" -NoNewWindow -Wait    
 Start-Process $VBOX_MANAGE  "startvm $MV_APACHE2" -NoNewWindow -Wait    
-Start-Process $VBOX_MANAGE  "startvm $MV_BALANCEADOR" -NoNewWindow -Wait  
 Start-Process $VBOX_MANAGE  "startvm $MV_DISCOS" -NoNewWindow -Wait  
 
 Write-Host "Maquinas virtuales arrancadas"
 Start-Process $VBOX_MANAGE  "controlvm  $MV_CLIENTE clipboard mode bidirectional" -NoNewWindow -Wait
+Start-Process $VBOX_MANAGE  "controlvm  $MV_BALANCEADOR clipboard mode bidirectional" -NoNewWindow -Wait
 Start-Process $VBOX_MANAGE  "controlvm  $MV_APACHE1 clipboard mode bidirectional" -NoNewWindow -Wait
 Start-Process $VBOX_MANAGE  "controlvm  $MV_APACHE2 clipboard mode bidirectional" -NoNewWindow -Wait
-Start-Process $VBOX_MANAGE  "controlvm  $MV_BALANCEADOR clipboard mode bidirectional" -NoNewWindow -Wait
 Start-Process $VBOX_MANAGE  "controlvm  $MV_DISCOS clipboard mode bidirectional" -NoNewWindow -Wait
