@@ -1,7 +1,7 @@
 #!/bin/bash
 # CONFIGURAR OCFS2 Y FORMATEAR EN APACHE1
 
-DISCO_ISCSI="/dev/sdb"
+DISCO_ISCSI="/dev/sdc"
 CLUSTER_NAME="webcluster"
 
 # 1. Crear config del clúster OCFS2

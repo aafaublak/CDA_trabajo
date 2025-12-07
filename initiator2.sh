@@ -27,7 +27,7 @@ iscsiadm -m discovery -t sendtargets -p 10.10.10.33
 
 # 4. Conectarse al target
 
-iscsiadm -m node -T iqn.2025-01.es.uvigo:cda.discos.webcluster -p 10.10.10.33 --login
+iscsiadm -m node -T iqn.2025-01.es.uvigo:cda.discos.webcluster -p 10.10.10.33 -l
 
 echo "DISPOSITIVOS DE BLOQUE"
 lsblk

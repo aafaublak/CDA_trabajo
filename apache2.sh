@@ -1,7 +1,7 @@
 #!/bin/bash
 # CONFIGURAR OCFS2 EN APACHE2 Y MONTAR
 
-DISCO_ISCSI="/dev/sdb"      
+DISCO_ISCSI="/dev/sdc"      
 CLUSTER_NAME="webcluster"
 
 # 1. Mismo cluster.conf que en APACHE1
